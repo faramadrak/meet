@@ -34,6 +34,38 @@ The installation manual is available [here](https://jitsi.github.io/handbook/doc
 
 If you plan to install the jitsi-meet stack on a Kubernetes cluster you can find tools and tutorials in the project [Jitsi on Kubernetes](https://github.com/jitsi-contrib/jitsi-kubernetes).
 
+
+```NGINX
+server {
+ listen 80;
+ server_name meet.farakhedmat.com;
+
+location /xmpp-websocket {
+    proxy_pass https://localhost:8443;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+location /colibri-ws {
+    proxy_pass https://localhost:8443;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+
+
+
+location / {
+      add_header Access-Control-Allow-Origin *;
+      proxy_pass https://localhost:8443;
+      proxy_set_header Host $host;
+  }
+
+
+}
+
+```
+
 ## TODO
 
 * Builtin TURN server.
